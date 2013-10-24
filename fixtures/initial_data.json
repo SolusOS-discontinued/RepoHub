@@ -1,0 +1,137 @@
+[
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "localhost:8000", 
+            "name": "SolusOS"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "solusos.com", 
+            "name": "SolusOS"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "admin", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2013-05-15T13:05:50.930Z", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$1l1oMP7M1vUr$gxzEA3hwRDxBmiVzmbKlNbT/Q0+ok3wnfCCCfLaDzPE=", 
+            "email": "admin@localhost", 
+            "date_joined": "2013-05-14T18:41:28.098Z"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "repository.repository", 
+        "fields": {
+            "url": "http://packages.solusos.com/2/pisi-index.xml", 
+            "building": false, 
+            "repo_type": "B", 
+            "name": "SolusOS2", 
+            "description": ""
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "builder.builder", 
+        "fields": {
+            "port": 9090, 
+            "repo": 1, 
+            "architecture": "32", 
+            "name": "SolusOS", 
+            "address": "127.0.0.1"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "djcelery.intervalschedule", 
+        "fields": {
+            "every": 30, 
+            "period": "minutes"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "djcelery.intervalschedule", 
+        "fields": {
+            "every": 3, 
+            "period": "minutes"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "djcelery.periodictask", 
+        "fields": {
+            "task": "repository.tasks.reload_all_repos", 
+            "name": "Reload all repositories", 
+            "exchange": null, 
+            "last_run_at": null, 
+            "args": "[]", 
+            "enabled": true, 
+            "routing_key": null, 
+            "crontab": null, 
+            "interval": 1, 
+            "queue": null, 
+            "total_run_count": 0, 
+            "expires": null, 
+            "kwargs": "{}", 
+            "date_changed": "2013-05-20T15:02:47.796Z", 
+            "description": ""
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "djcelery.periodictask", 
+        "fields": {
+            "task": "builder.tasks.refresh_known_medias", 
+            "name": "Refresh known builder medias", 
+            "exchange": null, 
+            "last_run_at": "2013-05-29T19:03:16.016Z", 
+            "args": "[]", 
+            "enabled": true, 
+            "routing_key": null, 
+            "crontab": null, 
+            "interval": 2, 
+            "queue": null, 
+            "total_run_count": 1, 
+            "expires": null, 
+            "kwargs": "{}", 
+            "date_changed": "2013-05-29T19:03:16.027Z", 
+            "description": ""
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "djcelery.periodictask", 
+        "fields": {
+            "task": "buildfarm.tasks.fix_frozen_queues", 
+            "name": "Fix frozen queues", 
+            "exchange": null, 
+            "last_run_at": "2013-05-29T21:17:47.145Z", 
+            "args": "[]", 
+            "enabled": true, 
+            "routing_key": null, 
+            "crontab": null, 
+            "interval": 2, 
+            "queue": null, 
+            "total_run_count": 15, 
+            "expires": null, 
+            "kwargs": "{}", 
+            "date_changed": "2013-05-29T21:17:47.154Z", 
+            "description": ""
+        }
+    }, 
+]

@@ -1,0 +1,67 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Packages" %}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	{% if component %}
+	<h1>Packages<small>&nbsp;Index of {{component}}</small></h1>
+	{% else %}
+	<h1>Packages<small>&nbsp;Index</small></h1>
+	{% endif %}
+</div>
+
+<br />
+{% if component %}
+<ul class="breadcrumb">
+<li><a href="{% url repo_index %}">Packages</a> <span class="divider">/</span></li>
+<li class="active">{{component}}</li>
+</ul>
+{% else %}
+<ul class="breadcrumb">
+<li class="active">Packages</li>
+</ul>
+{% endif %}
+
+{% if packages %}    
+<TABLE class="table table-bordered table-striped">
+
+<THEAD>
+<TR><TH>Name</TH><TH>Version</TH><TH>Summary</TH></TR>
+</THEAD>
+
+<TBODY>
+{% for package in packages %}
+<TR>
+	<TD><a href="{% url view_binary_package package.name %}">{{package.name}}</a></TD>
+	<TD>{{package.version}}</TD>
+	<TD>{{package.summary}}</TD>
+</TR>
+{% endfor %}
+</TBODY>
+</TABLE>
+<div class="pagination pagination-centered">
+	<ul>
+	<li>{% if packages.has_previous %}
+    <a href="?page={{packages.previous_page_number}}"><i class="icon-backward"></i></a>
+    {% else %}
+    <a href="#" class="disabled link"><i class="icon-backward icon-white"></i></a>
+    {% endif %}
+    </li>
+	<li><span class="current">
+            Page {{ packages.number }} of {{ packages.paginator.num_pages }}
+        </span></li>
+	<li>{% if packages.has_next %}
+    <a href="?page={{packages.next_page_number}}"><i class="icon-forward"></i></a>
+    {% else %}
+    <a href="#" class="link disabled"><i class="icon-forward icon-white"></i></a>
+    {% endif %}
+    </li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
+HELLO 

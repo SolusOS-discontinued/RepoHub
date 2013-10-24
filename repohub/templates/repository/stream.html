@@ -1,0 +1,46 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Updates" %}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	<h1>Repository<small>&nbsp;Latest updates</small></h1>
+</div>
+
+<br />
+<ul class="breadcrumb">
+<li><a href="{% url repo_index %}">Repository</a> <span class="divider">/</span></li>
+<li class="active">Updates stream</li>
+</ul>
+
+{% if packages %}
+
+<div class="span12">
+{% for package in packages %}
+<div class="well span5">
+    <h4><a href="{% url view_binary_package package.name %}">{{package.name}}</a><small> - {{package.version}}</small><span class="badge badge-info pull-right">{{package.release}}</span></h4>
+    <br />
+    <p>
+        {{package.comment}}
+    </p>
+    <hr />
+    <span>
+    <small class="pull-left muted">{{package.date_updated}}</small>
+    <small class="pull-right">
+        {% if package.known_user %}
+        <a href="{% url show_user package.known_user %}">{{package.maintainer_name}}</a>
+        {% else %}
+        <a href="mailto:{{package.maintainer_email}}">{{package.maintainer_name}}</a>
+        {% endif %}
+    </small>
+    </span>
+</div>
+{% endfor %}
+</div>
+
+{% endif %}
+{% endblock %}
+HELLO 

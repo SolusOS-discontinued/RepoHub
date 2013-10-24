@@ -1,0 +1,43 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Queues" %}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	<h1>Buildfarm<small>&nbsp;Queues</small></h1>
+</div>
+
+{% if queues %}
+<p>The currently registered build queues are displayed below. For more information on a particular build queue,
+or to see the current build process, just click the link in the left hand column</p>
+
+<br />   
+<TABLE class="table table-bordered table-striped">
+
+<THEAD>
+<TR><TH>Name</TH><TH>Architecture</TH><TH>Status</TH></TR>
+</THEAD>
+
+<TBODY>
+{% for queue in queues %}
+<TR>
+	<TD><a href="{% url queue_index queue.id %}">{{queue.name}}</a></TD>
+	<TD>{{queue.architecture}}</TD>
+    <TD>{% if queue.busy_string %}{{queue.busy_string}}{% else %}Idle{% endif %}</TD>
+</TR>
+{% endfor %}
+</TBODY>
+</TABLE>
+
+{% else %}
+<p>No queues are currently pending for the buildfarm</p>
+
+<br />
+{% endif %}
+
+
+{% endblock %}
+HELLO 

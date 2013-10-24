@@ -1,0 +1,47 @@
+
+{% load i18n %}
+
+{% load gravatar %}
+
+{% block body %}
+
+<!--<div class="row">
+
+<div class="span5 pull-left">
+	<div class=" page-header">
+		<h1>Profiles<small>&nbsp;{{user.username}}</small></h1>
+	</div>
+</div>
+</div> -->
+
+	
+	<div class="span3">
+    <ul class="thumbnails">
+    <li class="span3">
+    <div class="thumbnail">
+    <img src="{% gravatar_for_user user 300  %}" alt="">
+    <!--<h3>{{user.first_name}} {{user.last_name}}</h3>
+    <p><a class="btn btn-primary" href="mailto:{{user.email}}"><i class="icon-user icon-white"></i>&nbsp;Send an email</a></p>//-->
+    </div>
+    </li>
+    </ul>
+	</div>
+	
+<div class="span2">
+		<dl class="horizontal">
+			<dt>Overall repository contribution</dt>
+			<dd><br />
+				<div class="progress progress-striped active">
+				<div class="bar" style="width: {{package_ratio}}%;"></div>
+				</div>
+			</dd>
+			<dt>Recent packages</dt>
+			{% for package in packages %}
+			<dd><a href="/repo/package/{{package.name}}">{{package.name}}</a></dd>
+			{% endfor %}
+		</dl>
+</div>
+
+
+    
+{% endblock %}

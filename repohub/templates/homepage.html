@@ -1,0 +1,46 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+
+<div class="row">
+
+<div class="span5 pull-left">
+	<div class=" page-header">
+		<h1>RepoHub<small>&nbsp;beta</small></h1>
+	</div>
+	<small>SolusOS repository management</small>
+</div>
+<!-- First button takes us to the queue -->
+<div class="span4 well pull-right">
+	
+	<span class="pull-left">
+		<img src="{{STATIC_URL}}package.png" width="50" style="padding: 10px;"/>
+	</span>
+		<span>Want to see what's cooking in the repository? Hit the Buildfarm page now to see what's scheduled to build
+	</span>
+	<br /><br />
+	<a href="/buildfarm/" class="btn pull-right btn-primary">Check the build queues</a>
+</div>
+</div> <!-- end row 1 //-->
+
+<br /><br />
+<div class="row">
+
+<!-- "row" -->
+<div class="span8">
+<p>Please note this is <b>beta software</b>, and as such may be buggy in its operation, presentation and/or literal strings. Please report any
+such issues on <a href="http://bugs.solusos.com">our bug tracker</a>.
+</p>
+
+<br />
+<p>Using this site you can browse the currently available packages in the SolusOS 2 binary package repository, check the status of packaging, and watch our build queues in real time.</p>
+</div>
+</div>
+
+{% endblock %}

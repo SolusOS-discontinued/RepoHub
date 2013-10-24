@@ -1,0 +1,85 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{{package.name}}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	<h1>Source repository<small>&nbsp;{{package.name}}</small></h1>
+</div>
+<br />
+
+<ul class="breadcrumb">
+<li><a href="/repo/">Repository</a> <span class="divider">/</span></li>
+<li><a href="/repo/{{package.component}}">{{package.component}}</a> <span class="divider">/</span></li>
+<li class="active">{{package.name}}</li>
+</ul>
+<!-- First row -->
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">{{package.known_user.first_name}} {{package.known_user.last_name}}</h3>
+</div>
+<div class="modal-body">
+<p>One fine body…</p>
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+</div>
+</div>
+
+<div class="row">
+	
+	<div class="span5">    <!-- Begin left side -->
+	<dl class="horizontal">
+	<dt>Description</dt>
+	<dd>{{package.description}}</dd>
+	<br />
+	<dt>Version</dt>
+	<dd>{{package.version}}</dd>
+	</dl>
+	
+	</div> <!-- End left side -->
+	
+	<div class="span4">
+		<!-- Begin update info -->
+		<dl class="horizontal">
+			<dt>Packager</dt>
+			{% if package.known_user %}
+			<dd><a data-toggle="modal" href="/profiles/{{package.known_user.username}}" data-target="#myModal">{{package.maintainer_name}}</a></dd>
+			{% else %}
+			<dd><a href="mailto:{{package.maintainer_email}}">{{package.maintainer_name}}</a></dd>			
+			{% endif %}
+			<br />
+			<dt>Archives</dt>
+			{% for archive in archives %}
+			<dd><a href="{{archive.uri}}">{{archive.uri}}</a></dd>
+			{% endfor %}
+			<br />
+		</dl>
+	</div>
+</div> <!-- End the row -->
+
+<div class="row">
+<div class="span8">
+	<h3>History</h3><hr />
+	{% for update in updates %}
+	<div class="span8">
+    <blockquote>
+
+		<h4>{{update.version}} -  <span class="badge badge-info">{{update.release}}</span> </h4>
+    <p>{{update.comment}}</p>
+    <small>
+	{% if update.known_user %}
+	<a data-toggle="modal" href="/profiles/{{update.known_user.username}}" data-target="#myModal">{{update.name}}</a>
+	{% else %}
+	<a href="mailto:{{update.email}}">{{update.name}}</a> {% endif %}<cite title="Source Title"></cite></small>
+    </blockquote>
+	</div>
+	{% endfor %}
+</div>
+</div> <!-- End updates row -->
+{% endblock %}

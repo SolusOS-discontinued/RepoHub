@@ -1,0 +1,63 @@
+
+{% if not_reload %} 
+  <script src="/site_media/static/pinax/js/jquery.js"></script>
+
+           
+<script>
+$(function() {
+//twitter bootstrap script
+    $("#builder-modal-form-submit").click(function(){
+            $.ajax({
+            type: "POST",
+        url: "/builders/add/",
+        data: $('#builder-modal-form').serialize(),
+            success: function(msg){
+				$('#builder-form-wrap').html (msg.html);
+				if (msg.tags == "success") {
+					// Hide the add builder button
+					$('#builder-modal-form-submit').hide ();
+                    $('#builder-modal-form-close').click(function(){
+                        window.location.reload();
+                    });
+					$('#myModalLabelbuilder').html("<h3>Added builder</h3>");
+				}
+                },
+        error: function(){
+            alert("failure");
+            }
+              });
+    });
+});
+</script>
+{% endif %}
+
+{% load bootstrap_tags %}
+
+
+
+<!-- Modal -->
+{% if not_reload  %}
+<div id="addbuilder" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 name="myModalLabelbuilder" id="myModalLabelbuilder">Add builder</h3>
+</div>
+<div class="modal-body" id="main_form">
+{% endif %}
+	<div id="builder-form-wrap">
+	<form  name="builder-modal-form" id="builder-modal-form" class="form-horizontal modal-form" action="/builders/add/" method="post">
+	{% csrf_token %}
+	{{ form|as_bootstrap  }}
+	</form>
+	</div>
+{% if not_reload %}	
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true" id="builder-modal-form-close">Close</button>
+<button name="builder-modal-form-submit"  id="builder-modal-form-submit" class="btn btn-primary">Add builder</button>
+</div>
+</div>
+{% endif %}
+
+
+

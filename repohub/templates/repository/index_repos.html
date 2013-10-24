@@ -1,0 +1,43 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Repos" %}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	<h1>Repos</h1>
+</div>
+
+<br />
+
+{% if repos %}    
+<TABLE class="table table-bordered table-striped">
+
+<THEAD>
+<TR><TH>Name</TH><TH>Type</TH><TH>URL</TH></TR>
+</THEAD>
+
+<TBODY>
+{% for repo in repos %}
+<TR>
+	<TD><a href="/repo/manage/{{repo.id}}">{{repo.name}}</a></TD>
+	<TD>{% if repo.repo_type == "B" %}Binary{% else %}Source{% endif %}</TD>
+	<TD>{{repo.url}}</TD>
+</TR>
+{% endfor %}
+</TBODY>
+</TABLE>
+<div class="pagination pagination-centered">
+	<ul>
+	<li><a href="?page={{repos.previous_page_number}}"><i class="icon-backward"></i></a></li>
+	<li><span class="current">
+            Page {{ repos.number }} of {{ repos.paginator.num_pages }}
+        </span></li>
+	<li><a href="?page={{repos.next_page_number}}"><i class="icon-forward"></i></a></li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
+HELLO 

@@ -1,0 +1,137 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Management" %}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	<h1>Management</h1>
+</div>
+
+{% if request.user.is_staff %}
+
+{% include "builders/new.html" %}
+
+{% include "buildfarm/new_queue.html" %}
+
+{% include "repository/new_repo.html" %}
+
+{% include "repository/new_source_repo.html" %}
+
+{% include "repository/new_binman.html" %}
+
+{% endif %}
+
+<div class="row">
+    
+    <div class="span4">
+        <h4 class="muted">Repositories <small>- <a href="/repo/index/">View all repos</a></small></h4>
+        <div class="btn-group">
+        <a href="#" data-toggle="modal"  data-target="#addrepo" class="btn btn-small"><i class="icon-cog"></i>&nbsp;Add binary repo</a>
+        <a href="#" data-toggle="modal"  data-target="#addsourcerepo" class="btn btn-small"><i class="icon-folder-open"></i>&nbsp;Add source repo</a>
+        </div>
+        {% if repos %}
+        <hr />
+        <TABLE class="pull-right table well">
+            <TBODY>
+            {% for repo in repos %}
+                {% if repo.repo_type == "B" %}
+                    <TR><TD><b>{{repo.name}}</b> - binary&nbsp;&nbsp;</TD>
+                {% else %}
+                    {% if repo.loading %}
+                    <TR><TD><b>{{repo.name}}</b> - source&nbsp;&nbsp;</TD>
+                    {% else %}
+                    <TR><TD><b><a href="/source/">{{repo.name}}</a> - source</b></TD>
+                    {% endif %}
+                {% endif %}
+                {% if repo.building %}
+                    <TD><span class="label label-info">Reloading</span></TD>
+                {% elif repo.loading %}
+                    <TD><span class="label label-info">{{repo.loading_status}}</span></TD>
+                {% else %}
+                    <TD></TD>
+                {% endif %}
+                <TD><div class="pull-right btn-group"><a class="btn btn-small" href="{% if repo.repo_type == "B" %}{% url delete_binary_repo repo.id %}{% else %}{% url delete_source_repo repo.id %}{% endif %}"><i class="icon-trash"></i></a><a class="btn btn-small" href="{% if repo.repo_type == 'B' %}/repo/reload/{{repo.id}}/{% else %}{% url reload_source_repo repo.id %}{% endif %}"><i class="icon-refresh"></i></a></div></TD>
+                </TR>
+            {% endfor %}
+            </TBODY>
+        </TABLE>
+        {% else %}
+        <hr />
+        No repositories found
+        {% endif %}
+    </div>
+    
+    <div class="span4">
+        <h4 class="muted">Builders</h4>
+        <a href="#" data-toggle="modal"  data-target="#addbuilder" class="btn btn-small"><i class="icon-plus"></i>&nbsp;Add new builder</a>
+        {% if builders %}
+        <hr />
+        <TABLE class="pull-right table well">
+            {% for builder in builders %}
+                <TR><TD><b><a href="/builders/view/{{builder.name}}">{{builder.name}}</a></b></TD>
+                {% if builder.build_info %}
+                <TD><div class="label label-success">Online</div>{% if builder.build_info.imaging_progress > 0 %}&nbsp;<div class="label label-info">Imaging: {{builder.build_info.imaging_progress}}%</div></TD>{% endif %}
+                {% else %}
+                <TD><div class="label label-important pull-right">Offline</div></TD>
+                {% endif %}
+                <TD><div class=" pull-right btn-group"><a class="btn btn-small" href="{% url delete_builder builder.id %}"><i class="icon-trash"></i></a></div></TD>
+                </TR>
+            {% endfor %}
+        </TABLE>
+        {% else %}
+        <hr />
+        No builders found
+        {% endif %}       
+    </div>
+    
+    <div class="span4">
+        <h4 class="muted">Queues</h4>  
+        <a href="#" data-toggle="modal"  data-target="#addqueue" class="btn btn-small"><i class="icon-plus"></i>&nbsp;Create a queue</a>  
+        {% if queues %}
+        <hr />
+        <TABLE class="pull-right table well">
+            {% for queue in queues %}
+                <TR><TD><a href="{% url queue_index queue.id %}"><b>{{queue.name}} - {{queue.architecture}}</b></a></TD>
+                <TD><div class=" pull-right btn-group"><a class="btn btn-small {% if queue.busy %}disabled{% endif %}" href="{% if queue.busy %}#{% else %}{% url build_queue queue.id %}{% endif %}"><i class="icon-play"></i></a><a class="btn btn-small" href="{% url delete_queue queue.id %}"><i class="icon-trash"></i></a></div></TD>
+                </TR>
+            {% endfor %}
+        </TABLE>
+        {% else %}
+        <hr />
+        No queues found
+        {% endif %}         
+    </div>    
+
+</div> <!--//End row -->
+<br /><br /><br />
+
+<div class="row"> <!-- BinMan's -->
+    
+    <div class="span12">
+        <h4 class="muted">BinMan Management <small><a href="#" data-toggle="modal" data-target="#addbinman" class="btn btn-small"><i class="icon-plus"></i>&nbsp;Add BinMan</a></small></h4>
+        
+        {% if binmen %}
+            <hr />
+            <TABLE class="table table-striped">
+            {% for binman in binmen %}
+                <TR>
+                <TD>{{binman.name}}</TD>
+                <TD>
+                    {% if binman.busy %}
+                    <span class="label label-warning">Working..</span>&nbsp;<a href="#" class="btn btn-small disabled"><i class="icon-download-alt"></i>&nbsp;Process incoming</a>&nbsp;<a href="#" class="btn btn-small disabled"><i class="icon-random"></i>&nbsp;Create deltas</a>
+                    {% else %}
+                    <a href="{% url binman_process_incoming binman.id %}" class="btn btn-small"><i class="icon-download-alt"></i>&nbsp;Process incoming</a>&nbsp;<a href="{% url binman_process_deltas binman.id %}" class="btn btn-small"><i class="icon-random"></i>&nbsp;Create deltas</a>
+                    {% endif %}
+                </TD>
+                <TD>{% if binman.bin_info.active %}<span class="label label-success pull-right">Online</span>{% else %}<span class="label label-important pull-right">Offline</span>{% endif %} {{binman.bin_info.pending_packages}} packages awaiting processing</TD>
+                <TD><div class=" pull-right btn-group"><a class="btn btn-small" href="{% url delete_binman binman.id %}"><i class="icon-trash"></i></a></div></TD>
+                </TR>
+            {% endfor %}
+            </TABLE>
+        {% endif %}
+    </div>
+</div> <!-- End BinMan management -->
+{% endblock %}

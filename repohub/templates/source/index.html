@@ -1,0 +1,58 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Repo" %}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	{% if component %}
+	<h1>Source Repository<small>&nbsp;Index of {{component}}</small></h1>
+	{% else %}
+	<h1>Source Repository<small>&nbsp;Index</small></h1>
+	{% endif %}
+</div>
+
+<br />
+{% if component %}
+<ul class="breadcrumb">
+<li><a href="/repo/">Repository</a> <span class="divider">/</span></li>
+<li class="active">{{component}}</li>
+</ul>
+{% else %}
+<ul class="breadcrumb">
+<li class="active">Repository</li>
+</ul>
+{% endif %}
+
+{% if packages %}    
+<TABLE class="table table-bordered table-striped">
+
+<THEAD>
+<TR><TH>Name</TH><TH>Version</TH><TH>Release</TH><TH>Summary</TH></TR>
+</THEAD>
+
+<TBODY>
+{% for package in packages %}
+<TR>
+	<TD><a href="/source/package/{{package.name}}">{{package.name}}</a></TD>
+	<TD>{{package.version }}</TD>
+	<TD>{{package.release}}</TD>
+	<TD>{{package.summary}}</TD>
+</TR>
+{% endfor %}
+</TBODY>
+</TABLE>
+<div class="pagination pagination-centered">
+	<ul>
+	<li><a href="?page={{packages.previous_page_number}}"><i class="icon-backward"></i></a></li>
+	<li><span class="current">
+            Page {{ packages.number }} of {{ packages.paginator.num_pages }}
+        </span></li>
+	<li><a href="?page={{packages.next_page_number}}"><i class="icon-forward"></i></a></li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
+HELLO 

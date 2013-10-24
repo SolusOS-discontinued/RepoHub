@@ -1,0 +1,122 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Packages" %}{% endblock %}
+
+{% block body %}
+
+  <script src="/site_media/static/pinax/js/jquery.js"></script>
+
+
+<script>
+<!-- Refresh progressbar using ajax
+$(function() {
+        // Update progress bar
+        function update_progress_info() {
+			progress_url = "{% url queue_progress_json queue.id %}"            
+            $.getJSON(progress_url, {}, function(data, status){
+                if (data) {
+                    var progress = data.percent;
+
+                    var name = data.name_current;
+                    var total = data.total;
+                    var current = data.current;
+                    htm = "<strong>Building Package " + current + " of " + total + ": " + name + "</strong>";
+                    $('#packageprogress').html ('<div class="bar" style="width:' + progress + '%;"></div>');
+                    $('#packagereport').html (htm);
+                    if (current == total) {
+						return;
+					}
+                }
+                window.setTimeout(update_progress_info, 10);
+            });
+        };
+        window.setTimeout(update_progress_info, 10);
+});
+
+</script>
+	<div class=" page-header">
+		<h1>Buildfarm<small>&nbsp;{{queue.name}}{% if queue.busy_string %}&nbsp;<span class="label label-info">{{queue.busy_string}}</span>{% endif %}</small></h1>
+	</div>	
+<div class="well">
+	{% if package_list %}
+<img src="{{STATIC_URL}}package.png" height="80" width="80" style="padding: 10px;" />&nbsp;&nbsp; <span id="packagereport"><strong>Building Package {{current_package}} of {{total_packages}}: {{current_package_name}}</strong></span>
+
+<br /><br />
+
+    <div class="progress active progress-striped" id="packageprogress">
+    <div class="bar" style="width: {{total_pct}}%;"></div>
+    </div>
+    {% else %}
+<img src="{{STATIC_URL}}package.png" height="80" width="80" style="padding: 10px;" />&nbsp;&nbsp; <strong>There are no packages queued for the builder</strong>	{% if request.user.is_staff %}<a href="{% url pop_queue queue.id %}" class="btn btn-primary pull-right">Add all missing packages</a> {% endif %}
+ <br/>
+    {% endif %}
+    <small>Builder architecture: {{queue.architecture}}</small>
+</div>
+
+
+
+{% if package_list %}    
+<TABLE class="table table-bordered table-striped">
+
+<THEAD>
+<TR><TH>Name</TH><TH>Version</TH><TH>Status</TH></TR>
+</THEAD>
+
+<TBODY>
+{% for package in package_list %}
+<TR>
+	<TD><a href="/source/package/{{package.name}}">{{package.name}}</a>{% if request.user.is_staff %}<div class="pull-right"><a href="{% url delete_queue_item package.id %}" class="btn btn-small {% if queue.busy %}disabled{% endif %}"><i class="icon-remove"></i>&nbsp;Remove</a></div>{% endif %}</TD>
+    <TD>{{package.version}}</TD>
+	<TD>
+	{% if package.build_status == "pending" %}
+	<span class="label label-default">Waiting</span></TD>
+	{% elif package.build_status == "download" %}
+	<span class="label label-inverse">Downloading</span>
+	{% elif package.build_status == "config" %}
+	<span class="label label-info">Configuring</span>
+	{% elif package.build_status == "build" %}
+	<span class="label label-warning">Building</span>
+	{% elif package.build_status == "built" %}
+	<span class="label label-success">Built</span>
+	{% elif package.build_status == "fail" %}
+	<span class="label label-important">Failed</span>
+	{% endif %}
+	</TD>
+</TR>
+<TR>
+{% if package.build_log %}
+<TD COLSPAN="3">
+<div class="accordian" id="{{package.name}}-accordian">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#{{package.name}}-accordian" href="#collapse{{package.name}}"><b>Toggle build log</b></a>
+            </div>
+            <div id="collapse{{package.name}}" class="accordion-body collapse">
+                <div class="accordion-inner">
+
+                <pre>{{package.build_log}}</pre>
+                <a class="btn btn-small" href="#"><i class="icon-download"></i>&nbsp;Download this log</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</TD>
+</TR>
+{% endif %}
+{% endfor %}
+</TBODY>
+</TABLE>
+<div class="pagination pagination-centered">
+	<ul>
+	<li><a href="?page={{package_list.previous_page_number}}">Prev</a></li>
+	<li><span class="current">
+            Page {{ package_list.number }} of {{ package_list.paginator.num_pages }}
+        </span></li>
+	<li><a href="?page={{package_list.next_page_number}}">Next</a></li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
+HELLO 

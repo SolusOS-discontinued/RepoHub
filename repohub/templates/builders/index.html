@@ -1,0 +1,50 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Repo" %}{% endblock %}
+
+{% block body %}
+
+
+<div class="page-header">
+	<h1>Buildfarm<small>&nbsp;Builders</small></h1>
+</div>
+
+
+<br />
+<ul class="breadcrumb">
+<li><a href="/buildfarm/">Buildfarm</a> <span class="divider">/</span></li>
+<li class="active">Builders</li>
+</ul>
+
+<br /><br />
+{% if builders %}    
+<TABLE class="table table-bordered table-striped">
+
+<THEAD>
+<TR><TH>Name</TH><TH>Architecture</TH><TH>Edit</TH></TR>
+</THEAD>
+
+<TBODY>
+{% for builder in builders %}
+<TR>
+	<TD><a href="/builders/view/{{builder.name}}">{{builder.name}}</a></TD>
+	<TD>{{builder.architecture}}</TD>
+	<TD><a href="#"><i class="icon-edit"></i></a></TD>
+</TR>
+{% endfor %}
+</TBODY>
+</TABLE>
+<div class="pagination pagination-centered">
+	<ul>
+	<li><a href="?page={{packages.previous_page_number}}"><i class="icon-backward"></i></a></li>
+	<li><span class="current">
+            Page {{ packages.number }} of {{ packages.paginator.num_pages }}
+        </span></li>
+	<li><a href="?page={{packages.next_page_number}}"><i class="icon-forward"></i></a></li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
+HELLO 

@@ -1,0 +1,60 @@
+
+{% if not_reload %} 
+  <script src="/site_media/static/pinax/js/jquery.js"></script>
+
+           
+<script>
+$(function() {
+//twitter bootstrap script
+    $("#repo-binman-modal-form-submit").click(function(){
+            $.ajax({
+            type: "POST",
+        url: "{% url new_binman %}",
+        data: $('#repo-binman-modal-form').serialize(),
+            success: function(msg){
+				$('#repo-binman-form-wrap').html (msg.html);
+				if (msg.tags == "success") {
+					$('#repo-binman-modal-form-submit').hide ();
+                    $('#repo-binman-modal-form-close').click(function(){
+                        window.location.reload();
+                    });
+					$('#myModalLabelrepobinman').html("<h3>Added new BinMan</h3>");
+				}
+                },
+        error: function(){
+            alert("failure");
+            }
+              });
+    });
+});
+</script>
+{% endif %}
+
+{% load bootstrap_tags %}
+
+<!-- Modal -->
+{% if not_reload  %}
+<div id="addbinman" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 name="myModalLabelrepobinman" id="myModalLabelrepobinman">Add new BinMan</h3>
+</div>
+<div class="modal-body" id="main_binman_form">
+{% endif %}
+	<div id="repo-binman-form-wrap"><br />
+	<form  name="repo-binman-modal-form" id="repo-binman-modal-form" class="form-horizontal modal-form" action="{% url new_binman %}" method="post">
+	{% csrf_token %}
+	{{ form_binman|as_bootstrap  }}
+	</form>
+	</div>
+{% if not_reload %}	
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true" id="repo-binman-modal-form-close">Close</button>
+<button name="repo-binman-modal-form-submit"  id="repo-binman-modal-form-submit" class="btn btn-primary">Add BinMan</button>
+</div>
+</div>
+{% endif %}
+
+
+

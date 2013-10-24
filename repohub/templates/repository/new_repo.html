@@ -1,0 +1,63 @@
+
+{% if not_reload %} 
+  <script src="/site_media/static/pinax/js/jquery.js"></script>
+
+           
+<script>
+$(function() {
+//twitter bootstrap script
+    $("#repo-modal-form-submit").click(function(){
+            $.ajax({
+            type: "POST",
+        url: "/repo/addrepo/",
+        data: $('#repo-modal-form').serialize(),
+            success: function(msg){
+				$('#repo-form-wrap').html (msg.html);
+				if (msg.tags == "success") {
+					// Hide the add builder button
+					$('#repo-modal-form-submit').hide ();
+                    $('#repo-modal-form-close').click(function(){
+                        window.location.reload();
+                    });
+					$('#myModalLabelrepo').html("<h3>Added repo</h3>");
+				}
+                },
+        error: function(){
+            alert("failure");
+            }
+              });
+    });
+});
+</script>
+{% endif %}
+
+{% load bootstrap_tags %}
+
+
+
+<!-- Modal -->
+{% if not_reload  %}
+<div id="addrepo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 name="myModalLabelrepo" id="myModalLabelrepo">Create repo</h3>
+</div>
+<div class="modal-body" id="main_form">
+{% endif %}
+	<div id="repo-form-wrap">
+	<form  name="repo-modal-form" id="repo-modal-form" class="form-horizontal modal-form" action="/buildfarm/addrepo/" method="post">
+	{% csrf_token %}
+	{{ form_repo|as_bootstrap  }}
+	</form>
+	</div>
+{% if not_reload %}	
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true" id="repo-modal-form-close">Close</button>
+<button name="repo-modal-form-submit"  id="repo-modal-form-submit" class="btn btn-primary">Add repo</button>
+</div>
+</div>
+{% endif %}
+
+
+

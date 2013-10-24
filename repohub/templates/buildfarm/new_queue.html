@@ -1,0 +1,63 @@
+
+{% if not_reload %} 
+  <script src="/site_media/static/pinax/js/jquery.js"></script>
+
+           
+<script>
+$(function() {
+//twitter bootstrap script
+    $("#queue-modal-form-submit").click(function(){
+            $.ajax({
+            type: "POST",
+        url: "/buildfarm/addqueue/",
+        data: $('#queue-modal-form').serialize(),
+            success: function(msg){
+				$('#queue-form-wrap').html (msg.html);
+				if (msg.tags == "success") {
+					// Hide the add builder button
+					$('#queue-modal-form-submit').hide ();
+                    $('#queue-modal-form-close').click(function(){
+                        window.location.reload();
+                    });
+					$('#myModalLabelqueue').html("<h3>Added queue</h3>");
+				}
+                },
+        error: function(){
+            alert("failure");
+            }
+              });
+    });
+});
+</script>
+{% endif %}
+
+{% load bootstrap_tags %}
+
+
+
+<!-- Modal -->
+{% if not_reload  %}
+<div id="addqueue" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 name="myModalLabelqueue" id="myModalLabelqueue">Create queue</h3>
+</div>
+<div class="modal-body" id="main_form">
+{% endif %}
+	<div id="queue-form-wrap">
+	<form  name="queue-modal-form" id="queue-modal-form" class="form-horizontal modal-form" action="/buildfarm/addqueue/" method="post">
+	{% csrf_token %}
+	{{ form_queue|as_bootstrap  }}
+	</form>
+	</div>
+{% if not_reload %}	
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true" id="queue-modal-form-close">Close</button>
+<button name="queue-modal-form-submit"  id="queue-modal-form-submit" class="btn btn-primary">Add queue</button>
+</div>
+</div>
+{% endif %}
+
+
+

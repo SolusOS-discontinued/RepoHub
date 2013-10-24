@@ -1,0 +1,63 @@
+
+{% if not_reload %} 
+  <script src="/site_media/static/pinax/js/jquery.js"></script>
+
+           
+<script>
+$(function() {
+//twitter bootstrap script
+    $("#builder-source-repo-modal-form-submit").click(function(){
+            $.ajax({
+            type: "POST",
+        url: "/repo/addsourcerepo/",
+        data: $('#builder-source-repo-modal-form').serialize(),
+            success: function(msg){
+				$('#builder-source-repo-form-wrap').html (msg.html);
+				if (msg.tags == "success") {
+					// Hide the add builder button
+					$('#builder-source-repo-modal-form-submit').hide ();
+                    $('#builder-source-repo-modal-form-close').click(function(){
+                        window.location.reload();
+                    });
+					$('#myModalLabelbuildersourcerepo').html("<h3>Added source repo</h3>");
+				}
+                },
+        error: function(){
+            alert("failure");
+            }
+              });
+    });
+});
+</script>
+{% endif %}
+
+{% load bootstrap_tags %}
+
+
+
+<!-- Modal -->
+{% if not_reload  %}
+<div id="addsourcerepo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 name="myModalLabelbuildersourcerepo" id="myModalLabelbuildersourcerepo">Add source repo</h3>
+</div>
+<div class="modal-body" id="main_form">
+{% endif %}
+	<div id="builder-source-repo-form-wrap"><br />
+	<form  name="builder-source-repo-modal-form" id="builder-source-repo-modal-form" class="form-horizontal modal-form" action="/repo/addsourcerepo/" method="post">
+	{% csrf_token %}
+	{{ form_source|as_bootstrap  }}
+	</form>
+	</div>
+{% if not_reload %}	
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true" id="builder-source-repo-modal-form-close">Close</button>
+<button name="builder-source-repo-modal-form-submit"  id="builder-source-repo-modal-form-submit" class="btn btn-primary">Add repo</button>
+</div>
+</div>
+{% endif %}
+
+
+

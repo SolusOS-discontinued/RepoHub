@@ -1,0 +1,70 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Search Results" %}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	{% if found == 0 %}
+	<h1>Repository:<small>&nbsp;No search Results</small></h1>
+	{% elif found == 1 %}
+	<h1>Repository:<small>&nbsp;1 search result</small></h1>
+	{% else %}
+	<h1>Repository:<small>&nbsp;{{found}} search results</small></h1>
+	{% endif %}
+</div>
+
+<br />
+<ul class="breadcrumb">
+<li><a href="{% url repo_index %}">Repository</a> <span class="divider">/</span></li>
+<li class="active">Search results</li>
+</ul>
+
+
+{% if packages %}
+<strong>Results for "{{search_term}}"</strong>
+{% else %}
+<strong>Nothing found for "{{search_term}}"</strong>
+{% endif %}
+<br /><br />
+
+{% if packages %}    
+<TABLE class="table table-bordered table-striped">
+
+<THEAD>
+<TR><TH>Name</TH><TH>Version</TH><TH>Summary</TH></TR>
+</THEAD>
+
+<TBODY>
+{% for package in packages %}
+<TR>
+	<TD><a href="{% url view_binary_package package.name %}">{{package.name}}</a></TD>
+	<TD>{{package.version}}</TD>
+	<TD>{{package.summary}}</TD>
+</TR>
+{% endfor %}
+</TBODY>
+</TABLE>
+<div class="pagination pagination-centered">
+	<ul>
+	{% if packages.has_previous %}
+	<li><a href="?q={{search_term}}&page={{packages.previous_page_number}}"><i class="icon-backward"></i></a></li>
+	{% else %}
+	<li class="disabled"><a href="#"><i class="icon-backward icon-white"></i></a></li>
+	{% endif %}
+	
+	<li><span class="current">
+            Page {{ packages.number }} of {{ packages.paginator.num_pages }}
+        </span></li>
+     {% if packages.has_next %}
+	<li><a href="?q={{search_term}}&page={{packages.next_page_number}}"><i class="icon-forward "></i></a></li>
+	{% else %}
+	<li class="disabled"><a href="#"><i class="icon-forward icon-white"></i></a></li>
+	{% endif %}
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
+HELLO 

@@ -1,0 +1,64 @@
+
+{% if not_reload %} 
+  <script src="/site_media/static/pinax/js/jquery.js"></script>
+
+           
+<script>
+$(function() {
+//twitter bootstrap script
+    $("#builder-media-modal-form-submit").click(function(){
+            $.ajax({
+            type: "POST",
+        url: "/builders/media/{{builder.name}}",
+        data: $('#builder-media-modal-form').serialize(),
+            success: function(msg){
+				$('#builder-media-form-wrap').html (msg.html);
+				if (msg.tags == "success") {
+					// Hide the add builder button
+					$('#builder-media-modal-form-submit').hide ();
+                    $('#builder-media-modal-form-close').click(function(){
+                        window.location.reload();
+                    });
+					$('#myModalLabelbuildermedia').html("<h3>Added media</h3>");
+				}
+                },
+        error: function(){
+            alert("failure");
+            }
+              });
+    });
+});
+</script>
+{% endif %}
+
+{% load bootstrap_tags %}
+
+
+
+<!-- Modal -->
+{% if not_reload  %}
+<div id="addbuildermedia" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 name="myModalLabelbuildermedia" id="myModalLabelbuildermedia">Modify backing stores</h3>
+</div>
+<div class="modal-body" id="main_form">
+{% endif %}
+	<div id="builder-media-form-wrap"><br />
+	<form  name="builder-media-modal-form" id="builder-media-modal-form" class="form-horizontal modal-form" action="/builders/media/{{builder.name}}" method="post">
+	{% csrf_token %}
+	{{ form|as_bootstrap  }}
+	</form>
+    <span class="label label-important">Warning!</span><small>&nbsp;&nbsp;Modifying backing stores will result in a fresh backing store being generated</small>
+	</div>
+{% if not_reload %}	
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true" id="builder-media-modal-form-close">Close</button>
+<button name="builder-media-modal-form-submit"  id="builder-media-modal-form-submit" class="btn btn-primary">Modify media</button>
+</div>
+</div>
+{% endif %}
+
+
+

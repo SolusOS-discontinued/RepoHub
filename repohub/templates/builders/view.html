@@ -1,0 +1,92 @@
+{% extends "reposite_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{{builder.name}}{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+	<h1>Buildfarm<small>&nbsp;builder: {{builder.name}}</small></h1>
+</div>
+<br />
+
+<ul class="breadcrumb">
+<li><a href="/buildfarm/">Buildfarm</a> <span class="divider">/</span></li>
+<li><a href="/builders/">Builders</a> <span class="divider">/</span></li>
+<li class="active">{{builder.name}}</li>
+</ul>
+<!-- First row -->
+
+{% if request.user.is_staff %}
+
+{% include "builders/new_edit_media.html" %}
+
+{% endif %}
+
+<div class="row">
+	
+	<div class="span3">    <!-- Begin left side -->
+	<dl class="horizontal">
+	<dt>Target repository</dt>
+	<dd>{{builder.repo}}</dd>
+	<br />
+	<dt>Architecture</dt>
+	{% if builder.architecture == '32' %}
+	<dd>i686</dd>
+	{% else %}
+	<dd>x86_64</dd>
+	{% endif %}
+	</dl>
+	
+	</div> <!-- End left side -->
+
+    <div class="span2"> <!-- Center, info about Media/Storage -->
+    <dl class="horizontal pull-left">
+        {% if build_info.imaging_progress > 0 %}
+        <dt>Filesystem imaging</dt>
+        <dd><div class="progress" id="disk_imaging"><div class="bar" style="width: {{build_info.imaging_progress}}%;">{{build_info.imaging_progress}}%</div>
+        </div></dd>
+        {% endif %}
+        {% if media %}
+            {% if build_info.imaging_progress == 0 %}
+                <dt>Filesystem</dt>
+                <dd>{{media.filesystem}}</dd>
+                <dt>Backing store size</dt>
+                <dd>{{media.size}}MB</dd>
+                <dt>Backing store</dt>
+                {% if media.backing_store == '32' %}
+                    <dd>SolusOS 2 32-bit</dd>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </dl>
+    {% if request.user.is_staff %}
+    {% if build_info %}
+        {% if build_info.imaging_progress == 0 %}
+            <a href="#" data-toggle="modal"  data-target="#addbuildermedia" class="btn btn-small pull-right"><i class="icon-edit"></i>&nbsp;Modify backing stores</a>
+        {% endif %}
+    {% endif %}
+    {% endif %}
+    </div>
+    <div class="span3 offset3 well"> <!-- Right hand side, system info //-->
+    {% if build_info %}
+    <h4 class="header">Host System</h4><hr />
+        <dl class="horizontal">
+            <dt>Host kernel</dt>
+            <dd>{{build_info.kernel}}</dd><br />
+            <dt>Hostname</dt>
+            <dd>{{build_info.hostname}}</dd><br />
+            <dt>Maximum jobs</dt>
+            <dd>{{build_info.max_jobs}}</dd><br />
+            <dt>Disk usage</dt>
+            <dd><div class="progress" id="disk_usage"><div class="bar" style="width: {{build_info.percent}}%;">{{build_info.percent_human}}</div></dd>
+        </dl>
+    {% else %}
+    <p class="label label-important">Could not connect to host!</p>
+    {% endif %}
+    </div>
+    
+
+</div> <!-- End the row -->
+{% endblock %}
